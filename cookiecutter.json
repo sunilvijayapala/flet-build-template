@@ -17,6 +17,8 @@
     "route_url_strategy": "path",
     "web_renderer": "canvaskit",
     "use_color_emoji": "false",
+    "pwa_background_color": "#FFFFFF",
+    "pwa_theme_color": "#0175C2",
     "split_per_abi": false,
     "options": null
 }

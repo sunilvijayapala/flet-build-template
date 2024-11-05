@@ -22,7 +22,6 @@ const pythonModuleName = "{{ cookiecutter.python_module_name }}";
 final hideLoadingPage =
     bool.tryParse("{{ cookiecutter.hide_loading_animation }}".toLowerCase()) ??
         true;
-const outLogFilename = "out.log";
 const errorExitCode = 100;
 
 List<CreateControlFactory> createControlFactories = [
@@ -55,9 +54,9 @@ if os.getenv("FLET_PLATFORM") == "android":
 
     ssl._create_default_https_context = create_default_context
 
-out_file = open("$outLogFilename", "w+", buffering=1)
+out_file = open("{outLogFilename}", "w+", buffering=1)
 
-callback_socket_addr = os.environ.get("FLET_PYTHON_CALLBACK_SOCKET_ADDR")
+callback_socket_addr = os.getenv("FLET_PYTHON_CALLBACK_SOCKET_ADDR")
 if ":" in callback_socket_addr:
     addr, port = callback_socket_addr.split(":")
     callback_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -77,6 +76,7 @@ sys.exit = flet_exit
 
 ex = None
 try:
+    sys.argv = {argv}
     runpy.run_module("{module_name}", run_name="__main__")
 except Exception as e:
     ex = e
@@ -85,13 +85,15 @@ except Exception as e:
 sys.exit(0 if ex is None else $errorExitCode)
 """;
 
+String outLogFilename = "";
+
 // global vars
 String pageUrl = "";
 String assetsDir = "";
 String appDir = "";
 Map<String, String> environmentVariables = {};
 
-void main() async {
+void main(List<String> args) async {
   if (isProduction) {
     // ignore: avoid_returning_null_for_void
     debugPrint = (String? message, {int? wrapWidth}) => null;
@@ -111,10 +113,9 @@ void main() async {
                   pageUrl: pageUrl,
                   assetsDir: assetsDir,
                   hideLoadingPage: hideLoadingPage,
-                  createControlFactories: createControlFactories
-                )
+                  createControlFactories: createControlFactories)
               : FutureBuilder(
-                  future: runPythonApp(),
+                  future: runPythonApp(args),
                   builder:
                       (BuildContext context, AsyncSnapshot<String?> snapshot) {
                     if (snapshot.hasData || snapshot.hasError) {
@@ -127,11 +128,10 @@ void main() async {
                     } else {
                       // no result of error
                       return FletApp(
-                        pageUrl: pageUrl,
-                        assetsDir: assetsDir,
-                        hideLoadingPage: hideLoadingPage,
-                        createControlFactories: createControlFactories
-                      );
+                          pageUrl: pageUrl,
+                          assetsDir: assetsDir,
+                          hideLoadingPage: hideLoadingPage,
+                          createControlFactories: createControlFactories);
                     }
                   });
         } else if (snapshot.hasError) {
@@ -186,6 +186,8 @@ Future prepareApp() async {
     environmentVariables["FLET_APP_DATA"] = appDataPath;
     environmentVariables["FLET_APP_TEMP"] = appTempPath;
 
+    outLogFilename = path.join(appTempPath, "console.log");
+
     environmentVariables["FLET_PLATFORM"] =
         defaultTargetPlatform.name.toLowerCase();
 
@@ -204,8 +206,13 @@ Future prepareApp() async {
   return "";
 }
 
-Future<String?> runPythonApp() async {
-  var script = pythonScript.replaceAll('{module_name}', pythonModuleName);
+Future<String?> runPythonApp(List<String> args) async {
+  var argvItems = args.map((a) => "\"${a.replaceAll('"', '\\"')}\"");
+  var argv = "[${argvItems.isNotEmpty ? argvItems.join(',') : '""'}]";
+  var script = pythonScript
+      .replaceAll("{outLogFilename}", outLogFilename)
+      .replaceAll('{module_name}', pythonModuleName)
+      .replaceAll('{argv}', argv);
 
   var completer = Completer<String>();
 
