@@ -10,6 +10,7 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:serious_python/serious_python.dart';
 import 'package:url_strategy/url_strategy.dart';
+import 'package:window_manager/window_manager.dart';
 
 {% for dep in cookiecutter.flutter.dependencies %}
 import 'package:{{ dep }}/{{ dep }}.dart' as {{ dep }};
@@ -99,6 +100,8 @@ void main(List<String> args) async {
     debugPrint = (String? message, {int? wrapWidth}) => null;
   }
 
+  await setupDesktop();
+
   {% for dep in cookiecutter.flutter.dependencies %}
   {{ dep }}.ensureInitialized();
   {% endfor %}
@@ -156,8 +159,6 @@ Future prepareApp() async {
       setPathUrlStrategy();
     }
   } else {
-    await setupDesktop();
-
     // extract app from asset
     appDir = await extractAssetZip(assetPath, checkHash: true);
 
@@ -198,7 +199,7 @@ Future prepareApp() async {
       environmentVariables["FLET_SERVER_PORT"] = tcpPort.toString();
     } else {
       // use UDS on other platforms
-      pageUrl = "flet.sock";
+      pageUrl = "flet_$pid.sock";
       environmentVariables["FLET_SERVER_UDS_PATH"] = pageUrl;
     }
   }
@@ -227,7 +228,7 @@ Future<String?> runPythonApp(List<String> args) async {
         'Python output TCP Server is listening on port ${outSocketServer.port}');
     socketAddr = "$tcpAddr:${outSocketServer.port}";
   } else {
-    socketAddr = "stdout.sock";
+    socketAddr = "stdout_$pid.sock";
     if (await File(socketAddr).exists()) {
       await File(socketAddr).delete();
     }
@@ -345,4 +346,33 @@ Future<int> getUnusedPort() {
     socket.close();
     return port;
   });
+}
+
+bool isDesktop() {
+  return !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.windows ||
+          defaultTargetPlatform == TargetPlatform.macOS ||
+          defaultTargetPlatform == TargetPlatform.linux);
+}
+
+Future setupDesktop() async {
+  if (isDesktop()) {
+    WidgetsFlutterBinding.ensureInitialized();
+    await windowManager.ensureInitialized();
+
+    Map<String, String> env = Platform.environment;
+    var hideWindowOnStart = env["FLET_HIDE_WINDOW_ON_START"];
+    var hideAppOnStart = env["FLET_HIDE_APP_ON_START"];
+    debugPrint("hideWindowOnStart: $hideWindowOnStart");
+    debugPrint("hideAppOnStart: $hideAppOnStart");
+
+    await windowManager.waitUntilReadyToShow(null, () async {
+      if (hideWindowOnStart == null && hideAppOnStart == null) {
+        await windowManager.show();
+        await windowManager.focus();
+      } else if (hideAppOnStart != null) {
+        await windowManager.setSkipTaskbar(true);
+      }
+    });
+  }
 }
