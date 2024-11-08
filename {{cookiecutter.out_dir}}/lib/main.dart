@@ -188,6 +188,7 @@ Future prepareApp() async {
     environmentVariables["FLET_APP_TEMP"] = appTempPath;
 
     outLogFilename = path.join(appTempPath, "console.log");
+    environmentVariables["FLET_APP_CONSOLE"] = outLogFilename;
 
     environmentVariables["FLET_PLATFORM"] =
         defaultTargetPlatform.name.toLowerCase();
