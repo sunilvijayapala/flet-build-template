@@ -212,7 +212,7 @@ Future<String?> runPythonApp(List<String> args) async {
   var argvItems = args.map((a) => "\"${a.replaceAll('"', '\\"')}\"");
   var argv = "[${argvItems.isNotEmpty ? argvItems.join(',') : '""'}]";
   var script = pythonScript
-      .replaceAll("{outLogFilename}", outLogFilename)
+      .replaceAll("{outLogFilename}", outLogFilename.replaceAll("\\", "\\\\"))
       .replaceAll('{module_name}', pythonModuleName)
       .replaceAll('{argv}', argv);
 
