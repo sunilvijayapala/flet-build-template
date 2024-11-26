@@ -184,8 +184,8 @@ Future prepareApp() async {
       }
     }
 
-    environmentVariables["FLET_APP_DATA"] = appDataPath;
-    environmentVariables["FLET_APP_TEMP"] = appTempPath;
+    environmentVariables["FLET_APP_STORAGE_DATA"] = appDataPath;
+    environmentVariables["FLET_APP_STORAGE_TEMP"] = appTempPath;
 
     outLogFilename = path.join(appTempPath, "console.log");
     environmentVariables["FLET_APP_CONSOLE"] = outLogFilename;
