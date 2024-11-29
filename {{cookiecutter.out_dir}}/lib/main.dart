@@ -95,7 +95,7 @@ String appDir = "";
 Map<String, String> environmentVariables = {};
 
 void main(List<String> args) async {
-  if (isProduction) {
+  if (!args.contains("--debug")) {
     // ignore: avoid_returning_null_for_void
     debugPrint = (String? message, {int? wrapWidth}) => null;
   }
