@@ -43,6 +43,53 @@ os.environ["CRYPTOGRAPHY_OPENSSL_NO_LEGACY"] = "1"
 # fix for: https://github.com/flet-dev/serious-python/issues/85#issuecomment-2065000974
 os.environ["OPENBLAS_NUM_THREADS"] = "1"
 
+def initialize_ctypes():
+    import ctypes.util
+    import os
+    import pathlib
+    import sys
+
+    android_native_lib_dir = os.getenv("ANDROID_NATIVE_LIBRARY_DIR")
+
+    def find_library_override_imp(name: str):
+        if name is None:
+            return None
+        if pathlib.Path(name).exists():
+            return name
+        if sys.platform == "ios":
+            for lf in [
+                f"Frameworks/{name}.framework/{name}",
+                f"Frameworks/lib{name}.framework/lib{name}",
+            ]:
+                lib_path = pathlib.Path(sys.executable).parent.joinpath(lf)
+                if lib_path.exists():
+                    return str(lib_path)
+        elif android_native_lib_dir:
+            for lf in [f"lib{name}.so", f"{name}.so", name]:
+                lib_path = pathlib.Path(android_native_lib_dir).joinpath(lf)
+                if lib_path.exists():
+                    return str(lib_path)
+        return None
+
+    find_library_original = ctypes.util.find_library
+
+    def find_library_override(name):
+        return find_library_override_imp(name) or find_library_original(name)
+
+    ctypes.util.find_library = find_library_override
+
+    CDLL_init_original = ctypes.CDLL.__init__
+
+    def CDLL_init_override(self, name, *args, **kwargs):
+        CDLL_init_original(
+            self, find_library_override_imp(name) or name, *args, **kwargs
+        )
+
+    ctypes.CDLL.__init__ = CDLL_init_override
+
+
+initialize_ctypes()
+
 if os.getenv("FLET_PLATFORM") == "android":
     import ssl
 
