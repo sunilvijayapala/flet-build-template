@@ -12,19 +12,22 @@ dependencies:
     sdk: flutter
 
   serious_python: 0.8.7
-  flet: #0.26.0
-    git:
-      url: https://github.com/flet-dev/flet.git
-      ref: main
-      path: packages/flet
+  flet: 0.26.0
   
   path: ^1.9.0
   url_strategy: ^0.2.0
   cupertino_icons: ^1.0.6
   path_provider: ^2.1.4
   package_info_plus: ^8.0.2
-
+  window_manager: ^0.4.3
+  
 dependency_overrides:
+  flet:
+    git:
+      path: packages/flet
+      ref: main
+      url: https://github.com/flet-dev/flet.git
+
   wakelock_plus: ^1.2.10
   web: ^1.0.0
   window_manager: ^0.4.3
