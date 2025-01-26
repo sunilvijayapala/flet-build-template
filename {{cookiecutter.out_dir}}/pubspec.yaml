@@ -22,11 +22,11 @@ dependencies:
   window_manager: ^0.4.3
   
 dependency_overrides:
-  flet:
-    git:
-      path: packages/flet
-      ref: main
-      url: https://github.com/flet-dev/flet.git
+  # flet:
+  #   git:
+  #     path: packages/flet
+  #     ref: main
+  #     url: https://github.com/flet-dev/flet.git
 
   wakelock_plus: ^1.2.10
   web: ^1.0.0
