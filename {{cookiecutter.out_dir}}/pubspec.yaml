@@ -30,7 +30,7 @@ dependency_overrides:
 
   serious_python:
     git:
-      url: https://github.com/flet-dev/flet.git
+      url: https://github.com/flet-dev/serious-python.git
       ref: ios-fix
       path: src/serious_python
 
