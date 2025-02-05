@@ -28,6 +28,12 @@ dependency_overrides:
   #     ref: main
   #     url: https://github.com/flet-dev/flet.git
 
+  serious_python:
+    git:
+      url: https://github.com/flet-dev/flet.git
+      ref: ios-fix
+      path: src/serious_python
+
   wakelock_plus: ^1.2.10
   web: ^1.0.0
   window_manager: ^0.4.3
