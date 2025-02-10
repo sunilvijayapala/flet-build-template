@@ -9,21 +9,20 @@
       <key>{{ cookiecutter.bundle_id }}</key>
       <string>{{ cookiecutter.ios_provisioning_profile }}</string>
   </dict>
-{% macro render_dict(d) %}
-    {% for key, value in d.items() %}
-        <key>{{ key }}</key>
-        {% if value is string %}
-            <string>{{ value }}</string>
-        {% elif value is boolean %}
-            <{{ "true" if value else "false" }}/>
-        {% elif value is mapping %}
-            <dict>
-                {{ render_dict(value) }}
-            </dict>
-        {% endif %}
-    {% endfor %}
-{% endmacro %}
-
+{% macro render_dict(d) -%}
+{% for key, value in d.items() -%}
+<key>{{ key }}</key>
+{% if value is string -%}
+<string>{{ value }}</string>
+{% elif value is boolean -%}
+<{{ "true" if value else "false" }}/>
+{% elif value is mapping -%}
+<dict>
+    {{ render_dict(value) }}
+</dict>
+{% endif -%}
+{% endfor -%}
+{% endmacro -%}
 {{ render_dict(cookiecutter.ios_export_options) }}
 </dict>
 </plist>
