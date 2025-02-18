@@ -1,4 +1,4 @@
-package {{ cookiecutter.org_name }}.{{ cookiecutter.project_name }}
+package {{ cookiecutter.org_name }}.{{ cookiecutter.package_name }}
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -7,7 +7,7 @@ project(runner LANGUAGES CXX)
 set(BINARY_NAME "{{ cookiecutter.project_name }}")
 # The unique GTK application identifier for this application. See:
 # https://wiki.gnome.org/HowDoI/ChooseApplicationID
-set(APPLICATION_ID "{{ cookiecutter.org_name }}.{{ cookiecutter.project_name }}")
+set(APPLICATION_ID "{{ cookiecutter.bundle_id }}")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.

@@ -50,7 +50,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "{{ cookiecutter.org_name }}.{{ cookiecutter.project_name }}"
+        applicationId "{{ cookiecutter.bundle_id }}"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
