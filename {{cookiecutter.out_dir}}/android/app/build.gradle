@@ -23,7 +23,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "{{ cookiecutter.org_name }}.{{ cookiecutter.project_name }}"
+    namespace "{{ cookiecutter.org_name_2 }}.{{ cookiecutter.package_name }}"
     compileSdkVersion flutter.compileSdkVersion
 
     packagingOptions {
@@ -50,7 +50,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "{{ cookiecutter.bundle_id }}"
+        applicationId "{{ cookiecutter.org_name_2 }}.{{ cookiecutter.package_name }}"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
