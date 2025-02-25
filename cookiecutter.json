@@ -27,5 +27,6 @@
     "pwa_background_color": "#FFFFFF",
     "pwa_theme_color": "#0175C2",
     "split_per_abi": false,
-    "options": null
+    "options": null,
+    "pyproject": null
 }
