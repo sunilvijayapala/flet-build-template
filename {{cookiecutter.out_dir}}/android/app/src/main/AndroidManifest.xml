@@ -12,8 +12,7 @@
         android:label="{{ cookiecutter.product_name }}"
         android:name="${applicationName}"
         android:enableOnBackInvokedCallback="true"
-        {% if manifest_application %}
-        {% for k, v in cookiecutter.pyproject.tool.flet.android.manifest_application.items() %}
+        {% if manifest_application %}{% for k, v in cookiecutter.pyproject.tool.flet.android.manifest_application.items() -%}
         android:{{ k }}="{{ v }}"
         {% endfor %}{% endif %}
         android:icon="@mipmap/ic_launcher">
