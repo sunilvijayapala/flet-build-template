@@ -21,13 +21,13 @@ dependencies:
   window_manager: ^0.4.3
   
 dependency_overrides:
-  flet: 0.27.4
+  #flet: 0.27.4
 
-  # flet:
-  #   git:
-  #     path: packages/flet
-  #     ref: main
-  #     url: https://github.com/flet-dev/flet.git
+  flet:
+    git:
+      path: packages/flet
+      ref: feodor/flet-0-27-5-fixes
+      url: https://github.com/flet-dev/flet.git
 
   # serious_python:
   #   git:
@@ -121,14 +121,10 @@ flutter_native_splash:
     # 768 pixels in diameter.
     image: "images/icon.png"
 
-    # Splash screen background color.
-    color: "#ffffff"
-
     # The image_dark, color_dark, icon_background_color_dark, and branding_dark set values that
     # apply when the device is in dark mode. If they are not specified, the app will use the
     # parameters from above.
     image_dark: "images/icon.png"
-    color_dark: "#333333"
 
   # The android, ios and web parameters can be used to disable generating a splash screen on a given
   # platform.
