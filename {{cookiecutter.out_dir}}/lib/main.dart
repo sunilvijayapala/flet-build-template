@@ -46,11 +46,13 @@ const appBootScreenMessage = '{{ boot_screen_message | default("Preparing the ap
 final showAppStartupScreen = bool.tryParse("{{ show_startup_screen }}".toLowerCase()) ?? false;
 const appStartupScreenMessage = '{{ startup_screen_message | default("Getting things ready…", true) }}';
 
-List<CreateControlFactory> createControlFactories = [
+List<CreateControlFactory> extensions = [
 {% for dep in cookiecutter.flutter.dependencies %}
-{{ dep }}.createControl,
+{{ dep }}.Extension,
 {% endfor %}
 ];
+
+extensions.forEach((ext) => ext.ensureInitialized());
 
 String outLogFilename = "";
 
@@ -75,7 +77,7 @@ void main(List<String> args) async {
                   assetsDir: assetsDir,
                   showAppStartupScreen: showAppStartupScreen,
                   appStartupScreenMessage: appStartupScreenMessage,
-                  createControlFactories: createControlFactories)
+                  extensions: extensions)
               : FutureBuilder(
                   future: runPythonApp(args),
                   builder:
@@ -94,7 +96,7 @@ void main(List<String> args) async {
                           assetsDir: assetsDir,
                           showAppStartupScreen: showAppStartupScreen,
                           appStartupScreenMessage: appStartupScreenMessage,
-                          createControlFactories: createControlFactories);
+                          extensions: extensions);
                     }
                   });
         } else if (snapshot.hasError) {
@@ -119,10 +121,6 @@ Future prepareApp() async {
   }
 
   await setupDesktop();
-
-  {% for dep in cookiecutter.flutter.dependencies %}
-  {{ dep }}.ensureInitialized();
-  {% endfor %}
 
   if (kIsWeb) {
     // web mode - connect via HTTP
