@@ -14,6 +14,10 @@ import 'package:window_manager/window_manager.dart';
 
 import "python.dart";
 
+{% for dep in cookiecutter.flutter.dependencies %}
+import 'package:{{ dep }}/{{ dep }}.dart' as {{ dep }};
+{% endfor %}
+
 /*
 {% set show_boot_screen = get_pyproject("tool.flet." ~ cookiecutter.options.config_platform ~ ".app.boot_screen.show")
                         or get_pyproject("tool.flet.app.boot_screen.show")
@@ -33,10 +37,6 @@ show_startup_screen: {{ show_startup_screen }}
 startup_screen_message: {{ startup_screen_message }}
 */
 
-{% for dep in cookiecutter.flutter.dependencies %}
-import 'package:{{ dep }}/{{ dep }}.dart' as {{ dep }};
-{% endfor %}
-
 const bool isProduction = bool.fromEnvironment('dart.vm.product');
 
 const assetPath = "app/app.zip";
@@ -46,9 +46,9 @@ const appBootScreenMessage = '{{ boot_screen_message | default("Preparing the ap
 final showAppStartupScreen = bool.tryParse("{{ show_startup_screen }}".toLowerCase()) ?? false;
 const appStartupScreenMessage = '{{ startup_screen_message | default("Getting things ready…", true) }}';
 
-List<CreateControlFactory> extensions = [
+List<FletExtension> extensions = [
 {% for dep in cookiecutter.flutter.dependencies %}
-{{ dep }}.Extension,
+{{ dep }}.Extension(),
 {% endfor %}
 ];
 
