@@ -52,8 +52,6 @@ List<FletExtension> extensions = [
 {% endfor %}
 ];
 
-extensions.forEach((ext) => ext.ensureInitialized());
-
 String outLogFilename = "";
 
 // global vars
@@ -65,6 +63,10 @@ Map<String, String> environmentVariables = {};
 
 void main(List<String> args) async {
   _args = List<String>.from(args);
+
+  for (var ext in extensions) {
+    ext.ensureInitialized();
+  }
 
   runApp(FutureBuilder(
       future: prepareApp(),
